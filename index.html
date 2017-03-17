@@ -80,6 +80,7 @@ logUpdate('body-inline-first');
 </div>
 <ul>
   <li> inline-script-defer - O : MSIE8, MSIE9  // X: MSIE10, MSIE11
+  <li> Reloaded document, jQuery.ready could excute function at 'complete' state.
 </ul>
 <script>
 logUpdate('body-inline');
@@ -178,7 +179,7 @@ window.xready = xready;
 })();</pre>
 </div></div>
 
-<div id="last">LAST ELEMENT TO CHECK</div>
+<div id="last">LAST ELEMENT, TO CHECK WHEN TO ACCESS</div>
 <script>
 logUpdate('body-inline-last');
 var tableUpdater = function(i) {
