@@ -186,7 +186,7 @@ var tableUpdater = function(i) {
     var item = log[i];
     var type = item.type;
     var tr = LogElement('tr');
-    if (type == 'xready') tr.className = "xready";
+    if (type == 'xready' || type == 'init') tr.className = "xready";
     else if (type == 'readyState') tr.className = "readyState";
     else if (type.indexOf('jquery') > -1) tr.className = "jquery";
     tr.appendChild(LogElement('td', i+1));
