@@ -27,6 +27,9 @@ table {width:100%; font-size:12px;border-collapse:collapse}
 table {background:#fafafa}
 table th,
 table td {line-height:1.5em;padding:0.75em;border:1px solid #DFDFDF}
+table tr.xready {background: #F2DDFF}
+table tr.readyState {background: #F2F5FF}
+table tr.jquery {background: #FFFFDD}
 table td.log-type {text-align:left;font-weight:500;}
 pre {text-align: left;display:inline-block;padding:1em;font-family:consolas, courier, monospace;background:#f3f3f3;font-size:11pt}
 ol,ul {display:inline-block; text-align:left}

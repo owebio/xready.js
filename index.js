@@ -60,20 +60,3 @@ var LogElement = function(name, html) {
   if (html !== undefined) _ELEMENT.innerHTML = html;
   return _ELEMENT;
 }
-
-AddEvent(window, 'load', function(){
-  for (var i=0; i < log.length; i++) {
-    var item = log[i];
-    var tr = LogElement('tr');
-    tr.appendChild(LogElement('td', i+1));
-    var typeElem = LogElement('td', item.type);
-    typeElem.className = "log-type";
-    tr.appendChild(typeElem);
-    tr.appendChild(LogElement('td', item.state));
-    tr.appendChild(LogElement('td', item.lElem));
-    tr.appendChild(LogElement('td', item.lOffsetTop));
-    tr.appendChild(LogElement('td', item.scroll));
-    tr.appendChild(LogElement('td', item.time));
-    document.getElementById('log-table').appendChild(tr);
-  }
-});

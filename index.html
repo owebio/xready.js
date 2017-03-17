@@ -26,9 +26,6 @@
       });
     }
   </script>
-  <script defer>
-    logUpdate('head-inline-defer');
-  </script>
   <!--[if lt IE 9]>
   <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
   <![endif]-->
@@ -39,9 +36,14 @@
   <script src="https://code.jquery.com/jquery-3.2.0.slim.min.js"></script>
   <!-- <![endif]-->
   <script>
-  $(document).ready(function(){
+  jQuery(document).ready(function(){
     logUpdate('ready-jquery : ' + window.jQuery.fn.jquery.split(' ')[0]);
+    var i = $("#log-table tr").length;
+    if (i > 1) tableUpdater(i-1);
   });
+  </script>
+  <script defer>
+    logUpdate('head-inline-defer');
   </script>
 </head>
 <body>
@@ -178,6 +180,31 @@ window.xready = xready;
 <div id="last">LAST ELEMENT TO CHECK</div>
 <script>
 logUpdate('body-inline-last');
+var tableUpdater = function(i) {
+  var i = i || 0;
+  for (; i < log.length; i++) {
+    var item = log[i];
+    var type = item.type;
+    var tr = LogElement('tr');
+    if (type == 'xready') tr.className = "xready";
+    else if (type == 'readyState') tr.className = "readyState";
+    else if (type.indexOf('jquery') > -1) tr.className = "jquery";
+    tr.appendChild(LogElement('td', i+1));
+    var typeElem = LogElement('td', type);
+    typeElem.className = "log-type";
+    tr.appendChild(typeElem);
+    tr.appendChild(LogElement('td', item.state));
+    tr.appendChild(LogElement('td', item.lElem));
+    tr.appendChild(LogElement('td', item.lOffsetTop));
+    tr.appendChild(LogElement('td', item.scroll));
+    tr.appendChild(LogElement('td', item.time));
+    document.getElementById('log-table').appendChild(tr);
+  }
+}
+AddEvent(window, 'load', function(){
+  tableUpdater();
+});
+
 </script>
 </body>
 </html>
