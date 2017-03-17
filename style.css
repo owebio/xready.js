@@ -21,7 +21,7 @@ h2 {font-size:2em;font-weight:400;margin:3em 0 2em}
 .dp.domcontentloaded {background:#FDDDFE;width:22%;}
 .dp.parse {background:#E0E0FE;width:22%;}
 .dp.load  {background:#f3f3f3;width:9%;}
-
+#tb-button {margin:0.5em 0;text-align: right}
 #test-ua {display:inline-block;}
 table {width:100%; font-size:12px;border-collapse:collapse}
 table {background:#fafafa}
