@@ -1,0 +1,36 @@
+@import url(//fonts.googleapis.com/earlyaccess/notosanskr.css);
+
+html, body {margin:0;padding:0;}
+body {font-size:0.95em;font-family:'Noto Sans KR', sans-serif;line-height:1.45}
+
+html, body {height:100%}
+
+#hd {text-align:center}
+#hd-title {font-size:3em;font-family: consolas,courier, monospace;margin:0.5em 0}
+#hd-desc  {font-size:0.95em}
+#hd-desc-title {font-weight:700}
+
+#bd {max-width:760px;margin:3em auto;text-align: center}
+
+
+h2 {font-size:2em;font-weight:400;margin:3em 0 2em}
+
+.dp {display:inline-block;text-align:center;line-height:2em}
+.dp.state {background:#FDF7B6;width:13%;} /*39%*/
+.dp.defer {background:#EBEBEB;width:8%;}
+.dp.domcontentloaded {background:#FDDDFE;width:22%;}
+.dp.parse {background:#E0E0FE;width:22%;}
+.dp.load  {background:#f3f3f3;width:9%;}
+
+#test-ua {display:inline-block;}
+table {width:100%; font-size:12px;border-collapse:collapse}
+table {background:#fafafa}
+table th,
+table td {line-height:1.5em;padding:0.75em;border:1px solid #DFDFDF}
+table td.log-type {text-align:left;font-weight:500;}
+pre {text-align: left;display:inline-block;padding:1em;font-family:consolas, courier, monospace;background:#f3f3f3;font-size:11pt}
+ol,ul {display:inline-block; text-align:left}
+#last {position:relative;display:inline-block;margin-left:3px;padding:1em 2em;border:3px solid #f00;font-family:courier,consolas,monospace}
+
+blockquote {background:#f3f3f3;padding:1em;text-align:left}
+#minjs {word-break:break-all;white-space:pre-wrap; max-width:650px;background:#fff;border:8px solid #303030}

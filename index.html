@@ -1,0 +1,184 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge; IE=11; IE=10; IE=9; IE=8; IE=7" />
+  <title>xready</title>
+  <script>
+  //console.log(document.documentElement.doScroll);
+  //document.documentElement.doScroll( 'left' );
+  </script>
+  <link rel="stylesheet" type="text/css" href="style.css"/>
+  <script src="index.js"></script>
+  <script src="xready.js"></script>
+  <script>
+  xready(function(){
+    logUpdate('xready');
+  });
+  </script>
+  <script src="index.defer.js" defer></script>
+  <script>
+    logUpdate('head-inline-last');
+    if (document.readyState == 'interactive' && document.addEventListener) {
+      //CHECK IE9-10 IF DOMContentLoaded can be fired while strange interactive state;
+      document.addEventListener('DOMContentLoaded', function(){
+        logUpdate('interactive-DOMContentLoaded');
+      });
+    }
+  </script>
+  <script defer>
+    logUpdate('head-inline-defer');
+  </script>
+  <!--[if lt IE 9]>
+  <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+  <![endif]-->
+  <!--[if gte IE 9]>
+  <script src="https://code.jquery.com/jquery-3.2.0.slim.min.js"></script>
+  <![endif]-->
+  <!--[if !IE]> -->
+  <script src="https://code.jquery.com/jquery-3.2.0.slim.min.js"></script>
+  <!-- <![endif]-->
+  <script>
+  $(document).ready(function(){
+    logUpdate('ready-jquery : ' + window.jQuery.fn.jquery.split(' ')[0]);
+  });
+  </script>
+</head>
+<body>
+<script>
+logUpdate('body-inline-first');
+</script>
+<div id="hd-wp">
+  <div id="hd">
+    <div id="hd-title">
+      xready.js
+    </div>
+    <div id="hd-desc">
+    <span id="hd-desc-title">defer, interactive(readyState), DOMContentLoaded, load</span>
+    </div>
+  </div>
+</div>
+
+<div id="bd-wp"><div id="bd">
+
+<pre id="minjs">var xready = (function(d,r,e,c,f,a){a='interactive'!=d[r];d[e](c,function(){a=!0});return function(b){'loading'!=d[r]&&a?b():d[e](c,b)}})(document,'readyState','addEventListener','DOMContentLoaded');</pre>
+<div>MSIE9, MSIE10, MSIE11, MS Edge, Chrome, Firefix, Opera, Safari</div>
+
+<h2> ideal flow </h2>
+<div class="dom-progress"><div class="dp state"> loading </div><div class="dp parse"> dom parsing </div><div class="dp state"> interactive </div><div class="dp defer"> defer </div><div class="dp domcontentloaded"> DOMContentLoaded </div><div class="dp state"> complete </div><div class="dp load">load</div></div>
+<blockquote> ... but MSIE8, MSIE9, MSIE10 are different when it's 'interactive' state. Sometimes "Loading" state is skipped and then you can catch only 'complete' state for <u>'document.onreadystatechange'</u> event.</blockquote> 
+
+
+<h2> Online UA test </h2>
+<div id="test-ua">
+  <table id="log-table">
+  <tr><th>no</th><th>type</th><th>readyState</th><th>Element</th><th>offsetTop</th><th>doScroll</th><th>time</th></tr>
+  </table>
+</div>
+<ul>
+  <li> inline-script-defer - O : MSIE8, MSIE9  // X: MSIE10, MSIE11
+  <li> jQuery ready can be dead sometimes if it's lower than MSIE11.
+</ul>
+<script>
+logUpdate('body-inline');
+</script>
+<h2> MANY CASES </h2>
+<h3> 1. MSIE11, MS Edge, Chrome, Firefox, Opera, Safari </h3>
+<pre>var xready = function(func) {
+  if (document.readyState != "loading") func();
+  else document.addEventListener('DOMContentLoaded', func, false);
+}</pre>
+<ol>
+  <li> Trust "document.readyState == 'interactive'".
+  <li> Use "DOMContentLoaded" event. 
+</ol>
+<h3> 2. MSIE9, MSIE10 - (1) doScroll trick</h3>
+<pre>var xready = function(func) {
+  try {document.documentElement.doScroll('left')}
+  catch(e) {
+    return document.addEventListener('DOMContentLoaded', func, false);
+  }
+  func();
+}</pre>
+<ol>
+  <li> Don't trust "document.readyState == 'interactive'" as usual.<br/>
+    <ol>
+      <li> (esp) 'reload(refresh), back, forward' moving causes problem.
+      <li> Sometimes <u>readyStateChange</u> event can be fired only once : 'complete'.
+      <li> The 'loading' readyState can be skipped.
+      <li> Use doScroll instead.
+    </ol>
+  <li> Use "DOMContentLoaded" event. 
+</ol>
+<blockquote>
+'doScroll' trick is faster than 'complete' state as usual. But Sometimes it could excute function lastly. At least it  guarantees to excute. Be aware that 'loading' state can be skipped many times, and if 'interactive' state is the first state the chance is lost without capturing when it's interactive.
+</blockquote>
+<h3> 3. MSIE9, MSIE10 - (2) check init readyState </h3>
+Another way to check without using doScroll. <br/>
+If this code is able to read init readyState, it quarantees when to excute fuction. 
+<pre>(function(){
+  var initState = document.readyState, addEvent = document.addEventListener;
+  var realReady = (initState == "complete") ? true : false;
+  var xready = function(func) {
+    if (initState == "interactive" && !realReady) {
+       addEvent('DOMContentLoaded', func, false);
+    } else func();
+  }
+  addEvent('DOMContentLoaded', function(){realReady = true;}, false);
+  window.xready = xready; // export xready.
+})();</pre>
+
+<h3> 4. MSIE8 </h3>
+<pre>(function(){
+  var xready = {
+    items    : [],
+    status   : false,
+    check    : function() {
+      if (xready.status) return true;
+      if (document.readyState == "complete") return xready.status = true;
+      try {document.documentElement.doScroll('left'); return xready.status = true;}
+      catch(e) {return false;}
+    },
+    interval : function() {
+      if (xready.check()) {
+        var items = xready.items;
+        for (var i=0;  i < items.length ; i++ ) {items[i]();};
+      } else {
+        return setTimeout(xready.interval, 1);
+      }
+    },
+    exec     : function(func) {
+      if (xready.check()) return func();
+      xready.items.push(func);
+      if (xready.items.length == 1) xready.interval();
+    }
+  }
+  window.xready = xready.exec; // export xready function.
+})();</pre>
+<ol>
+  <li> 〃Ditto.
+  <li> You can <b>not</b> use "DOMContentLoaded" event.
+</ol>
+
+<h2> SOLUTION </h2>
+<h3> : MSIE11, MS Edge, Chrome, Firefox, Opera, Safari</h3> 
+Notifying users to upgrade web browser or to change it if lower than MSIE11. <br>
+All of MSIE9 users can upgrade MSIE11. (Window 7 also)
+<h3> : + MSIE9, MSIE10 </h3> 
+<pre>(function(){
+var initReady = (document.readyState == 'interactive') ? false: true;
+var xready = function(func) {
+  if (document.readyState != "loading" && initReady) func();
+  else document.addEventListener('DOMContentLoaded', func);
+}
+document.addEventListener('DOMContentLoaded', function() {initReady = true});
+window.xready = xready;
+})();</pre>
+</div></div>
+
+<div id="last">LAST ELEMENT TO CHECK</div>
+<script>
+logUpdate('body-inline-last');
+</script>
+</body>
+</html>
